@@ -34,7 +34,7 @@
   * License: https://bootstrapmade.com/license/
   ======================================================== -->
   <style>
-  /* Responsive Whitespace Fix for Specific Sections Only */
+  /* adjust whitespace for mobile sites */
   @media screen and (max-width: 768px) {
     
     /* add edge margins exclusively to Education, Publications, and Achievements containers */
@@ -51,6 +51,12 @@
       box-sizing: border-box !important;
     }
     
+    /* add vertical spacing cushion between individual bullet points or publication blocks */
+    #education li,
+    #publications li,
+    #achievements li {
+      margin-bottom: 22px !important;
+    }
     /* ensure long text blocks don't cause accidental sideways layout shifting */
     body {
       overflow-x: hidden;
