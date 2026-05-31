@@ -1271,30 +1271,3 @@ section {
 #footer .credits {
   font-size: 13px;
 }
-
-/* Mobile Responsive Whitespace Fix */
-@media screen and (max-width: 768px) {
-    /* Targets default section elements or common semantic section wrappers */
-    section, 
-    .section, 
-    div[id]:not(#home):not(#hero) { 
-        padding-top: 50px !important;
-        padding-bottom: 50px !important;
-        padding-left: 20px !important;
-        padding-right: 20px !important;
-        margin-bottom: 20px !important;
-    }
-
-    /* Prevents lists, lists items, or grid items from bumping up against the edge of the screen */
-    ul, ol, p, .row, .container {
-        padding-left: 10px;
-        padding-right: 10px;
-        word-wrap: break-word; /* Prevents overflow clipping from long publication strings */
-    }
-    
-    /* Optional: Ensure heading titles have clear breathing room above them */
-    h2, h3 {
-        margin-top: 30px !important;
-        margin-bottom: 20px !important;
-    }
-}
