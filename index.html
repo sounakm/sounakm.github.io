@@ -38,11 +38,11 @@
   @media screen and (max-width: 768px) {
     
     /* 1. Force a universal edge-cushion for all sections following the hero */
-    section:not(:first-of-type),
-    .ui.container:not(:first-of-type),
-    div[id]:not(#home):not(#hero) {
-      padding-left: 24px !important;
-      padding-right: 24px !important;
+    section:not(:first-of-type):not(#research-projects),
+    .ui.container:not(:first-of-type):not(#research-projects),
+    div[id]:not(#home):not(#hero):not(#research-projects) {
+      padding-left: 32px !important;
+      padding-right: 32px !important;
       margin-top: 40px !important;
       margin-bottom: 40px !important;
       box-sizing: border-box !important;
