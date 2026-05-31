@@ -1,0 +1,262 @@
+/*
+ * Mobile Whitespace Improvements for sounakm.github.io
+ * Add this file to your repository at: assets/css/mobile-whitespace.css
+ * Then link it in _includes/head.html or _layouts/default.html with:
+ *   <link rel="stylesheet" href="{{ '/assets/css/mobile-whitespace.css' | relative_url }}">
+ *
+ * These rules are scoped to mobile only (max-width: 768px) so they
+ * will NOT affect your desktop layout.
+ */
+
+@media (max-width: 768px) {
+
+  /* ── Global body padding ──────────────────────────────────────── */
+  body {
+    padding-left: 1.25rem !important;
+    padding-right: 1.25rem !important;
+  }
+
+  /* ── Navigation / header ──────────────────────────────────────── */
+  nav,
+  header,
+  .navbar,
+  .site-header,
+  #navbar,
+  #header {
+    padding-top: 0.75rem !important;
+    padding-bottom: 0.75rem !important;
+    margin-bottom: 1rem !important;
+  }
+
+  nav ul,
+  nav ol,
+  .navbar-nav {
+    gap: 0.5rem !important;
+    padding: 0.5rem 0 !important;
+  }
+
+  nav li,
+  .nav-item {
+    margin: 0.25rem 0 !important;
+  }
+
+  /* ── Hero / intro section ─────────────────────────────────────── */
+  #hero,
+  .hero,
+  .intro,
+  .page-header {
+    padding-top: 3rem !important;
+    padding-bottom: 2.5rem !important;
+  }
+
+  #hero h1,
+  .hero h1,
+  .intro h1 {
+    font-size: 2rem !important;
+    margin-bottom: 1rem !important;
+  }
+
+  #hero p,
+  .hero p,
+  .intro p {
+    margin-bottom: 1.25rem !important;
+  }
+
+  /* ── Section spacing ──────────────────────────────────────────── */
+  section,
+  .section {
+    padding-top: 3rem !important;
+    padding-bottom: 3rem !important;
+    margin-bottom: 1rem !important;
+  }
+
+  /* ── Section headings ─────────────────────────────────────────── */
+  h2 {
+    margin-top: 2rem !important;
+    margin-bottom: 1.25rem !important;
+    padding-bottom: 0.4rem !important;
+  }
+
+  h3 {
+    margin-top: 1.5rem !important;
+    margin-bottom: 0.75rem !important;
+  }
+
+  h4 {
+    margin-top: 1.25rem !important;
+    margin-bottom: 0.5rem !important;
+  }
+
+  h5 {
+    margin-top: 0.75rem !important;
+    margin-bottom: 0.4rem !important;
+  }
+
+  /* ── About section ────────────────────────────────────────────── */
+  #about,
+  .about {
+    padding-top: 3rem !important;
+    padding-bottom: 2.5rem !important;
+  }
+
+  #about p,
+  .about p {
+    margin-bottom: 1.25rem !important;
+    line-height: 1.8 !important;
+  }
+
+  /* ── Education section ────────────────────────────────────────── */
+  #education,
+  .education {
+    padding-top: 3rem !important;
+    padding-bottom: 2.5rem !important;
+  }
+
+  #education h4,
+  .education h4 {
+    margin-top: 2rem !important;
+    margin-bottom: 0.25rem !important;
+  }
+
+  #education h5,
+  .education h5 {
+    margin-top: 0.25rem !important;
+    margin-bottom: 0.25rem !important;
+  }
+
+  #education em,
+  .education em {
+    display: block !important;
+    margin-bottom: 1rem !important;
+  }
+
+  /* ── Publications section ─────────────────────────────────────── */
+  #publications,
+  .publications {
+    padding-top: 3rem !important;
+    padding-bottom: 2.5rem !important;
+  }
+
+  #publications ol,
+  .publications ol {
+    padding-left: 1.25rem !important;
+  }
+
+  #publications li,
+  .publications li {
+    margin-bottom: 1.5rem !important;
+    line-height: 1.75 !important;
+  }
+
+  /* ── Research / projects section ─────────────────────────────── */
+  #research-projects,
+  .research,
+  .projects {
+    padding-top: 3rem !important;
+    padding-bottom: 2.5rem !important;
+  }
+
+  /* Project cards / items */
+  #research-projects img,
+  .research img,
+  .project img {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    margin-bottom: 1rem !important;
+    border-radius: 4px !important;
+  }
+
+  #research-projects h3,
+  .research h3,
+  .project h3 {
+    margin-top: 1rem !important;
+    margin-bottom: 0.6rem !important;
+  }
+
+  #research-projects p,
+  .research p,
+  .project p {
+    margin-bottom: 2rem !important;
+    line-height: 1.75 !important;
+  }
+
+  /* ── Achievements section ─────────────────────────────────────── */
+  #achievements,
+  .achievements {
+    padding-top: 3rem !important;
+    padding-bottom: 2.5rem !important;
+  }
+
+  #achievements ul,
+  .achievements ul {
+    padding-left: 1.25rem !important;
+  }
+
+  #achievements li,
+  .achievements li {
+    margin-bottom: 1rem !important;
+    line-height: 1.75 !important;
+  }
+
+  /* ── Contact section ──────────────────────────────────────────── */
+  #contact,
+  .contact {
+    padding-top: 3rem !important;
+    padding-bottom: 3rem !important;
+  }
+
+  #contact h4,
+  .contact h4 {
+    margin-top: 1.5rem !important;
+    margin-bottom: 0.5rem !important;
+  }
+
+  #contact p,
+  .contact p {
+    margin-bottom: 0.75rem !important;
+    line-height: 1.75 !important;
+  }
+
+  /* Social icons row in contact */
+  #contact .social-icons,
+  #contact .links,
+  #contact a[href*="linkedin"],
+  #contact a[href*="scholar"],
+  #contact a[href*="orcid"],
+  #contact a[href*="researchgate"] {
+    margin-top: 1.5rem !important;
+    margin-right: 0.75rem !important;
+    margin-bottom: 0.75rem !important;
+  }
+
+  /* ── Footer ───────────────────────────────────────────────────── */
+  footer,
+  .site-footer {
+    padding-top: 2rem !important;
+    padding-bottom: 2rem !important;
+    text-align: center !important;
+  }
+
+  /* ── Generic paragraph / list breathing room ──────────────────── */
+  p {
+    margin-bottom: 1.1rem !important;
+    line-height: 1.75 !important;
+  }
+
+  ul, ol {
+    margin-bottom: 1rem !important;
+  }
+
+  li {
+    margin-bottom: 0.4rem !important;
+  }
+
+  /* ── Dividers / horizontal rules ──────────────────────────────── */
+  hr {
+    margin-top: 2rem !important;
+    margin-bottom: 2rem !important;
+  }
+
+}
