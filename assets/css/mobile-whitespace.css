@@ -1,12 +1,4 @@
-/*
- * Mobile Whitespace Improvements for sounakm.github.io
- * Add this file to your repository at: assets/css/mobile-whitespace.css
- * Then link it in _includes/head.html or _layouts/default.html with:
- *   <link rel="stylesheet" href="{{ '/assets/css/mobile-whitespace.css' | relative_url }}">
- *
- * These rules are scoped to mobile only (max-width: 768px) so they
- * will NOT affect your desktop layout.
- */
+/* These rules are scoped to mobile only (max-width: 768px) so they will NOT affect your desktop layout*/
 
 @media (max-width: 768px) {
 
@@ -40,54 +32,34 @@
     margin: 0.25rem 0 !important;
   }
 
-  /* ── Hero / intro section ─────────────────────────────────────── */
-  #hero,
-  .hero,
-  .intro,
-  .page-header {
-    padding-top: 3rem !important;
-    padding-bottom: 2.5rem !important;
-  }
-
-  #hero h1,
-  .hero h1,
-  .intro h1 {
-    font-size: 2rem !important;
-    margin-bottom: 1rem !important;
-  }
-
-  #hero p,
-  .hero p,
-  .intro p {
-    margin-bottom: 1.25rem !important;
-  }
-
-  /* ── Section spacing ──────────────────────────────────────────── */
-  section,
-  .section {
+  /* ── Section spacing (hero section intentionally excluded) ───────
+     The first section (#hero) contains your profile image and is
+     left exactly as-is on mobile. All other sections get whitespace. */
+  section:not(#hero):not(.hero),
+  .section:not(#hero):not(.hero) {
     padding-top: 3rem !important;
     padding-bottom: 3rem !important;
     margin-bottom: 1rem !important;
   }
 
-  /* ── Section headings ─────────────────────────────────────────── */
-  h2 {
+  /* ── Section headings (hero excluded) ────────────────────────── */
+  :not(#hero) > h2 {
     margin-top: 2rem !important;
     margin-bottom: 1.25rem !important;
     padding-bottom: 0.4rem !important;
   }
 
-  h3 {
+  :not(#hero) > h3 {
     margin-top: 1.5rem !important;
     margin-bottom: 0.75rem !important;
   }
 
-  h4 {
+  :not(#hero) > h4 {
     margin-top: 1.25rem !important;
     margin-bottom: 0.5rem !important;
   }
 
-  h5 {
+  :not(#hero) > h5 {
     margin-top: 0.75rem !important;
     margin-bottom: 0.4rem !important;
   }
@@ -239,17 +211,21 @@
     text-align: center !important;
   }
 
-  /* ── Generic paragraph / list breathing room ──────────────────── */
-  p {
+  /* ── Generic paragraph / list breathing room (hero excluded) ──── */
+  :not(#hero) > p,
+  #about p, #education p, #publications p,
+  #research-projects p, #achievements p, #contact p {
     margin-bottom: 1.1rem !important;
     line-height: 1.75 !important;
   }
 
-  ul, ol {
+  :not(#hero) > ul,
+  :not(#hero) > ol {
     margin-bottom: 1rem !important;
   }
 
-  li {
+  :not(#hero) > ul > li,
+  :not(#hero) > ol > li {
     margin-bottom: 0.4rem !important;
   }
 
