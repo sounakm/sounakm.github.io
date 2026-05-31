@@ -1,9 +1,21 @@
-/* These rules are scoped to mobile only (max-width: 768px) so they will NOT affect your desktop layout*/
+/*
+ * Mobile Whitespace Improvements for sounakm.github.io
+ * Add this file to your repository at: assets/css/mobile-whitespace.css
+ * Then link it in _includes/head.html or _layouts/default.html with:
+ *   <link rel="stylesheet" href="{{ '/assets/css/mobile-whitespace.css' | relative_url }}">
+ *
+ * These rules are scoped to mobile only (max-width: 768px) so they
+ * will NOT affect your desktop layout.
+ */
 
 @media (max-width: 768px) {
 
-  /* ── Global body padding ──────────────────────────────────────── */
-  body {
+  /* ── Side padding on content sections only (NOT body/hero) ───────
+     Applying padding to body was causing white strips on the sides
+     of the full-bleed hero background image. Instead we pad each
+     content section individually so the hero stays edge-to-edge.   */
+  #about, #education, #publications,
+  #research-projects, #achievements, #contact {
     padding-left: 1.25rem !important;
     padding-right: 1.25rem !important;
   }
