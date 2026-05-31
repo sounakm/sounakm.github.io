@@ -37,7 +37,7 @@
   /* Responsive Whitespace Fix for Specific Sections Only */
   @media screen and (max-width: 768px) {
     
-    /* 1. Add edge margins exclusively to Education, Publications, and Achievements containers */
+    /* add edge margins exclusively to Education, Publications, and Achievements containers */
     #education,
     #publications,
     #achievements,
@@ -50,23 +50,8 @@
       margin-bottom: 45px !important;
       box-sizing: border-box !important;
     }
-
-    /* 2. Give nested text items, lists, and links inside these 3 sections breathing room */
-    #education p, #education ul, #education li,
-    #publications p, #publications ul, #publications li,
-    #achievements p, #achievements ul, #achievements li {
-      padding-left: 8px !important;
-      padding-right: 8px !important;
-    }
-
-    /* 3. Add vertical spacing cushion between individual bullet points or publication blocks */
-    #education li,
-    #publications li,
-    #achievements li {
-      margin-bottom: 22px !important;
-    }
     
-    /* 4. Safety net to ensure long text blocks don't cause accidental sideways layout shifting */
+    /* ensure long text blocks don't cause accidental sideways layout shifting */
     body {
       overflow-x: hidden;
     }
