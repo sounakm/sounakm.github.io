@@ -280,12 +280,6 @@ h6 {
   position: relative;
 }
 
-@media (min-width: 992px) {
-  #hero {
-    padding-left: 160px;
-  }
-}
-
 #hero:before {
   content: "";
   background: rgba(255, 255, 255, 0.8);
@@ -295,6 +289,12 @@ h6 {
   left: 0;
   right: 0;
 } */
+
+@media (min-width: 992px) {
+  #hero {
+    padding-left: 160px;
+  }
+}
 
 #hero {
   width: 100%;
