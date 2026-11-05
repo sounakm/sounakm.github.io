@@ -1,0 +1,409 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DOI to BibTeX</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Raleway:wght@600;700&family=JetBrains+Mono:wght@400&display=swap">
+<style>
+/* Layout: one narrow working column; colors and fonts taken from sounakm.github.io. Light mode only. */
+:root {
+  --bg: #f7f8f9;
+  --surface: #ffffff;
+  --fg: #272829;
+  --heading: #45505b;
+  --muted: #6c757d;
+  --line: #dde1e6;
+  --accent: #0563bb;
+  --accent-hover: #067ded;
+  --accent-ink: #ffffff;
+  --code-bg: #f1f3f5;
+  --ok: #1d7a4a;
+  --err: #b3261e;
+  --err-bg: #fbecea;
+  --f-display: "Raleway", "Helvetica Neue", Arial, sans-serif;
+  --f-body: "Open Sans", "Helvetica Neue", Arial, sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--fg);
+  font: 15px/1.55 var(--f-body);
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.wrap { max-width: 860px; margin: 0 auto; padding-block: 40px 64px; display: grid; gap: 28px; }
+header h1 { font: 700 2rem/1.15 var(--f-display); color: var(--heading); margin: 0 0 6px; text-wrap: balance; }
+header h1 .arrow { color: var(--accent); }
+header p { margin: 0; color: var(--muted); max-width: 64ch; }
+label.lbl { display: block; font-size: .78rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+textarea {
+  width: 100%; min-height: 110px; resize: vertical; padding: 12px 14px;
+  font: 14px/1.5 var(--f-mono); color: var(--fg); background: var(--surface);
+  border: 1px solid var(--line); border-radius: 6px;
+}
+textarea:focus-visible, button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.hint { font-size: .85rem; color: var(--muted); margin-top: 6px; }
+.controls { display: flex; justify-content: center; margin-top: 16px; }
+.btn {
+  font: 600 14px/1 var(--f-body); padding: 11px 18px; border-radius: 6px; cursor: pointer;
+  border: 1px solid var(--accent); background: var(--accent); color: var(--accent-ink);
+}
+.btn.ghost { background: transparent; color: var(--accent); }
+.btn:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+.btn.ghost:hover { background: transparent; color: var(--accent-hover); }
+.btn:disabled { opacity: .55; cursor: progress; }
+.check { display: inline-flex; align-items: center; gap: 7px; font-size: .9rem; color: var(--fg); cursor: pointer; }
+.out-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; margin-bottom: 10px; }
+.out-head h2 { font: 700 1.15rem/1.2 var(--f-display); color: var(--heading); margin: 0; }
+.status { font-size: .85rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.entries { display: grid; gap: 14px; }
+.entry { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; overflow: hidden; min-width: 0; }
+.entry-bar { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 8px 10px 8px 14px; border-bottom: 1px solid var(--line); font-size: .82rem; color: var(--muted); }
+.entry-bar .src { font-family: var(--f-mono); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.copy { font: 500 12.5px/1 var(--f-body); padding: 7px 11px; border-radius: 5px; border: 1px solid var(--line); background: var(--bg); color: var(--fg); cursor: pointer; flex-shrink: 0; }
+.copy.done { color: var(--ok); border-color: var(--ok); }
+pre { margin: 0; padding: 14px; background: var(--code-bg); font: 13px/1.55 var(--f-mono); overflow-x: auto; white-space: pre; tab-size: 2; }
+.entry.error { border-color: var(--err); }
+.entry.error .msg { padding: 12px 14px; background: var(--err-bg); color: var(--err); font-size: .9rem; }
+.entry.loading .msg { padding: 12px 14px; color: var(--muted); font-size: .9rem; }
+.empty { min-height: 220px; background: var(--surface); border: 1px solid var(--line); border-radius: 6px; }
+details.notes { color: var(--muted); font-size: .88rem; }
+details.notes summary { cursor: pointer; color: var(--fg); font-weight: 500; }
+details.notes ul { padding-left: 1.2em; margin: 8px 0 0; display: grid; gap: 4px; }
+code { font-family: var(--f-mono); font-size: .92em; }
+@media (prefers-reduced-motion: no-preference) { .copy, .btn { transition: background .15s, color .15s, border-color .15s; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>DOI <span class="arrow">→</span> BibTeX</h1>
+    <p>Paste a DOI or article link and get a BibTeX entry in the Google Scholar “Cite” format, with the DOI link added as the <code>url</code> field.</p>
+  </header>
+
+  <section>
+    <label class="lbl" for="input">Links or DOIs, one per line</label>
+    <textarea id="input" spellcheck="false" placeholder="https://doi.org/10.1016/j.physrep.2025.10.001"></textarea>
+    <div class="controls">
+      <button class="btn" id="go" type="button">Generate BibTeX</button>
+    </div>
+  </section>
+
+  <section>
+    <div class="out-head">
+      <h2>BibTeX</h2>
+      <button class="btn ghost" id="copyAll" type="button" hidden>Copy all</button>
+    </div>
+    <div class="entries" id="entries"><div class="empty"></div></div>
+  </section>
+
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  // ---------- DOI extraction ----------
+  function extractDoi(raw) {
+    let s = raw.trim();
+    if (!s) return null;
+    try { s = decodeURIComponent(s); } catch (e) {}
+    // arXiv
+    let m = s.match(/arxiv\.org\/(?:abs|pdf|html)\/([a-z\-\.]*\/?\d{4}\.\d{4,5}|[a-z\-\.]+\/\d{7})(?:v\d+)?/i)
+         || s.match(/^arxiv:\s*(\d{4}\.\d{4,5}|[a-z\-\.]+\/\d{7})(?:v\d+)?$/i)
+         || s.match(/^(\d{4}\.\d{4,5})(?:v\d+)?$/);
+    if (m) return { doi: "10.48550/arXiv." + m[1], arxiv: m[1] };
+    // Nature article slugs map directly to 10.1038/<slug>
+    m = s.match(/nature\.com\/articles\/([a-z0-9\-\.]+)/i);
+    if (m && !/^10\./.test(m[1])) return { doi: "10.1038/" + m[1] };
+    // Generic DOI
+    m = s.match(/10\.\d{4,9}\/[^\s"<>?#]+/);
+    if (!m) return null;
+    let doi = m[0];
+    doi = doi.replace(/\/(full|abstract|epdf|pdf|epub|summary|fulltext|meta|html)(\/.*)?$/i, "");
+    doi = doi.replace(/\.(pdf|html?)$/i, "");
+    doi = doi.replace(/[\.,;:\)\]]+$/, "");
+    const ax = doi.match(/^10\.48550\/arxiv\.(.+?)(?:v\d+)?$/i);
+    if (ax) return { doi: "10.48550/arXiv." + ax[1], arxiv: ax[1] };
+    return { doi: doi };
+  }
+
+  // ---------- Fetching ----------
+  async function fetchMeta(info) {
+    const doi = info.doi;
+    let crossErr = null;
+    if (!info.arxiv) {
+      try {
+        const r = await fetch("https://api.crossref.org/works/" + encodeURIComponent(doi));
+        if (r.ok) { const j = await r.json(); return fromCrossref(j.message); }
+        crossErr = r.status;
+      } catch (e) { crossErr = "network"; }
+    }
+    let r;
+    try {
+      r = await fetch("https://doi.org/" + doi.split("/").map(encodeURIComponent).join("/").replace(/%2F/g, "/"),
+        { headers: { Accept: "application/vnd.citationstyles.csl+json" } });
+    } catch (e) {
+      throw new Error("Couldn't reach Crossref or doi.org. Check your internet connection and try again.");
+    }
+    if (r.status === 404) throw new Error("No record found for DOI " + doi + ". Check that the DOI is complete.");
+    if (!r.ok) throw new Error("doi.org returned an error (" + r.status + ") for " + doi + ".");
+    return fromCSL(await r.json());
+  }
+
+  function yearOf(d) {
+    if (!d) return "";
+    const p = d["date-parts"];
+    if (p && p[0] && p[0][0]) return String(p[0][0]);
+    if (d.raw) { const m = String(d.raw).match(/\d{4}/); if (m) return m[0]; }
+    return "";
+  }
+  const first = v => Array.isArray(v) ? (v[0] || "") : (v || "");
+
+  function fromCrossref(m) {
+    const t = m.type;
+    const kind = ({
+      "journal-article": "journal", "proceedings-article": "conference",
+      "book-chapter": "chapter", "book-section": "chapter", "book-part": "chapter", "reference-entry": "chapter",
+      "book": "book", "monograph": "book", "edited-book": "book", "reference-book": "book",
+      "dissertation": "thesis", "report": "report", "posted-content": "preprint"
+    })[t] || "misc";
+    return {
+      kind,
+      title: first(m.title) + (first(m.subtitle) && !first(m.title).includes(first(m.subtitle)) ? ": " + first(m.subtitle) : ""),
+      authors: (m.author || (kind === "book" ? m.editor : null) || []).map(a => ({ family: a.family || "", given: a.given || "", literal: a.name || "" })),
+      container: first(m["container-title"]),
+      volume: m.volume || "", issue: m.issue || "",
+      page: m.page || m["article-number"] || "",
+      year: yearOf(m.issued) || yearOf(m["published-print"]) || yearOf(m["published-online"]) || yearOf(m.created),
+      publisher: m.publisher || "",
+      institution: (m.institution && m.institution[0] && m.institution[0].name) || (m["group-title"] || "")
+    };
+  }
+
+  function fromCSL(c) {
+    const t = c.type;
+    const kind = ({
+      "article-journal": "journal", "paper-conference": "conference", "chapter": "chapter",
+      "book": "book", "thesis": "thesis", "report": "report", "article": "preprint",
+      "manuscript": "preprint", "posted-content": "preprint"
+    })[t] || "misc";
+    return {
+      kind,
+      title: first(c.title),
+      authors: (c.author || []).map(a => ({ family: a.family || "", given: a.given || "", literal: a.literal || a.name || "" })),
+      container: first(c["container-title"]),
+      volume: c.volume ? String(c.volume) : "", issue: c.issue ? String(c.issue) : "",
+      page: c.page ? String(c.page) : (c.number ? String(c.number) : ""),
+      year: yearOf(c.issued) || yearOf(c.published) || yearOf(c["published-print"]) || yearOf(c["published-online"]),
+      publisher: c.publisher || "", institution: ""
+    };
+  }
+
+  // ---------- Text helpers ----------
+  const scratch = document.createElement("div");
+  function plain(s) {
+    if (!s) return "";
+    // Strip JATS/MathML/HTML tags and decode entities
+    const doc = new DOMParser().parseFromString("<body>" + String(s).replace(/<\/?(jats:)?(p|title)[^>]*>/g, " ") + "</body>", "text/html");
+    return (doc.body.textContent || "").replace(/\s+/g, " ").trim();
+  }
+
+  function sentenceCase(s) {
+    let firstWord = true;
+    return s.split(/(\s+)/).map(tok => {
+      if (/^\s+$/.test(tok) || !tok) return tok;
+      if (firstWord) { firstWord = false; return tok; }
+      return tok.split("-").map(part => {
+        const core = part.replace(/^[^\p{L}]+|[^\p{L}]+$/gu, "");
+        if (core.length > 1 && core[0] === core[0].toUpperCase() && core.slice(1) === core.slice(1).toLowerCase() && core[0] !== core[0].toLowerCase()) {
+          return part.replace(core, core.toLowerCase());
+        }
+        return part;
+      }).join("-");
+    }).join("");
+  }
+
+  const ACC = { "̀": "`", "́": "'", "̂": "^", "̃": "~", "̈": '"', "̄": "=", "̇": ".", "̋": "H", "̆": "u", "̌": "v", "̊": "r", "̧": "c", "̨": "k", "̣": "d" };
+  const SPECIAL = { "ß": "{\\ss}", "ø": "{\\o}", "Ø": "{\\O}", "æ": "{\\ae}", "Æ": "{\\AE}", "œ": "{\\oe}", "Œ": "{\\OE}", "ł": "{\\l}", "Ł": "{\\L}", "ı": "{\\i}", "đ": "{\\dj}", "Đ": "{\\DJ}", "þ": "{\\th}",
+    "–": "--", "—": "---", "‘": "`", "’": "'", "“": "``", "”": "''", " ": " ", " ": " " };
+  function texify(s, accents) {
+    s = s.replace(/\\/g, "\\textbackslash ").replace(/([&%$#_])/g, "\\$1");
+    if (!accents) return s;
+    let out = "";
+    for (const ch of s) {
+      if (ch.charCodeAt(0) < 128) { out += ch; continue; }
+      if (SPECIAL[ch]) { out += SPECIAL[ch]; continue; }
+      const d = ch.normalize("NFD");
+      const base = d[0], marks = [...d.slice(1)];
+      if (marks.length && base.charCodeAt(0) < 128 && marks.every(k => ACC[k])) {
+        let b = base === "i" ? "\\i" : base === "j" ? "\\j" : base;
+        for (const k of marks) {
+          const cmd = ACC[k];
+          b = /[a-zA-Z]/.test(cmd) ? "\\" + cmd + "{" + b + "}" : "\\" + cmd + b;
+        }
+        out += "{" + b + "}";
+      } else out += ch;
+    }
+    return out;
+  }
+
+  const ascii = s => s.normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/ß/g, "ss").replace(/[øØ]/g, "o").replace(/[łŁ]/g, "l").replace(/[æÆ]/g, "ae").toLowerCase().replace(/[^a-z]/g, "");
+  const STOP = new Set(["a", "an", "the", "on", "of", "in", "at", "to", "for", "and", "from", "with", "by", "as", "is", "are", "or"]);
+
+  function cleanPublisher(p) {
+    if (!p) return "";
+    const map = [
+      [/^Springer Science and Business Media LLC$/i, "Springer"], [/^Springer Nature Switzerland$/i, "Springer"],
+      [/^Springer (Berlin Heidelberg|International Publishing|Singapore|US|New York)$/i, "Springer"],
+      [/^Elsevier( BV| B\.V\.| Inc\.?| Ltd)?$/i, "Elsevier"], [/^Wiley$/i, "Wiley Online Library"],
+      [/Institute of Electrical and Electronics Engineers/i, "IEEE"], [/^American Physical Society/i, "APS"],
+      [/^American Chemical Society/i, "ACS Publications"], [/^Oxford University Press/i, "Oxford University Press"],
+      [/^Cambridge University Press/i, "Cambridge University Press"], [/^Informa UK Limited$/i, "Taylor & Francis"],
+      [/^Proceedings of the National Academy of Sciences$/i, "National Acad Sciences"], [/^MDPI AG$/i, "MDPI"],
+      [/^American Association for the Advancement of Science/i, "American Association for the Advancement of Science"],
+      [/^Public Library of Science/i, "Public Library of Science"], [/^Association for Computing Machinery/i, "ACM"],
+      [/^AIP Publishing$/i, "AIP Publishing"], [/^IOP Publishing$/i, "IOP Publishing"],
+      [/^Cold Spring Harbor Laboratory$/i, "Cold Spring Harbor Laboratory"], [/^Optica Publishing Group$/i, "Optica Publishing Group"]
+    ];
+    for (const [re, v] of map) if (re.test(p)) return v;
+    return p.replace(/\s*\([A-Z&]{2,}\)\s*$/, "").replace(/,?\s+(BV|B\.V\.|LLC|Ltd\.?|Limited|Inc\.?|GmbH|AG|S\.A\.|SA)$/i, "").trim();
+  }
+
+  function fmtAuthor(a, accents) {
+    if (!a.family && a.literal) return "{" + texify(plain(a.literal), accents) + "}";
+    const given = plain(a.given).replace(/\./g, " ").replace(/\s+-/g, "-").replace(/\s+/g, " ").trim();
+    const fam = plain(a.family);
+    return texify(given ? fam + ", " + given : fam, accents);
+  }
+
+  // ---------- BibTeX ----------
+  function buildEntry(meta, info, opts, usedKeys) {
+    const title = plain(meta.title);
+    const sc = s => opts.sentence ? sentenceCase(s) : s;
+    const tx = s => texify(s, opts.accents);
+
+    const fa = meta.authors[0];
+    const surname = fa ? ascii(plain(fa.family || fa.literal).split(/[\s\-]+/)[0] || "") : "";
+    const word = (title.split(/\s+/).map(w => ascii(w)).find(w => w && !STOP.has(w))) || "";
+    let key = (surname + meta.year + word) || info.doi.replace(/[^a-z0-9]/gi, "");
+    if (usedKeys.has(key)) { let i = 0; while (usedKeys.has(key + "abcdefghijklmnopqrstuvwxyz"[i])) i++; key += "abcdefghijklmnopqrstuvwxyz"[i]; }
+    usedKeys.add(key);
+
+    const authors = meta.authors.map(a => fmtAuthor(a, opts.accents)).join(" and ");
+    const pages = String(meta.page || "").replace(/\s*[-‐-―]+\s*/g, "--");
+    const container = plain(meta.container);
+    const publisher = cleanPublisher(plain(meta.publisher));
+
+    let type = "misc", f = [];
+    const T = ["title", tx(sc(title))], A = authors ? ["author", authors] : null;
+    const Y = meta.year ? ["year", meta.year] : null;
+    const P = publisher ? ["publisher", tx(publisher)] : null;
+    const V = meta.volume ? ["volume", tx(String(meta.volume))] : null;
+    const N = meta.issue ? ["number", tx(String(meta.issue))] : null;
+    const PG = pages ? ["pages", tx(pages)] : null;
+
+    if (info.arxiv || /arxiv/i.test(publisher) && meta.kind === "preprint") {
+      const id = info.arxiv || (info.doi.match(/arxiv\.(.+)$/i) || [])[1] || "";
+      type = "article"; f = [T, A, ["journal", "arXiv preprint arXiv:" + id], Y];
+    } else switch (meta.kind) {
+      case "journal": type = "article"; f = [T, A, container ? ["journal", tx(sc(container))] : null, V, N, PG, Y, P]; break;
+      case "conference": type = "inproceedings"; f = [T, A, container ? ["booktitle", tx(sc(container))] : null, V, PG, Y]; break;
+      case "chapter": type = "incollection"; f = [T, A, container ? ["booktitle", tx(sc(container))] : null, PG, Y, P]; break;
+      case "book": type = "book"; f = [T, A, Y, P]; break;
+      case "thesis": type = "phdthesis"; f = [T, A, Y, publisher ? ["school", tx(publisher)] : null]; break;
+      case "report": type = "techreport"; f = [T, A, Y, publisher ? ["institution", tx(publisher)] : null]; break;
+      case "preprint": {
+        const venue = plain(meta.institution) || container || publisher;
+        type = "article"; f = [T, A, venue ? ["journal", tx(venue)] : null, PG, Y, P]; break;
+      }
+      default: type = "misc"; f = [T, A, Y, P];
+    }
+    f = f.filter(Boolean);
+    f.push(["url", "https://doi.org/" + info.doi]);
+    return "@" + type + "{" + key + ",\n" + f.map(([k, v]) => "  " + k + "={" + v + "}").join(",\n") + "\n}";
+  }
+
+  // ---------- UI ----------
+  const $ = id => document.getElementById(id);
+  const input = $("input"), go = $("go"), entriesEl = $("entries"), copyAllBtn = $("copyAll");
+  const OPTS = { sentence: false, accents: true };
+  let results = [];
+
+  function copyText(text, btn, label) {
+    const done = () => { btn.textContent = "Copied"; btn.classList.add("done"); setTimeout(() => { btn.textContent = label; btn.classList.remove("done"); }, 1600); };
+    const fallback = () => {
+      const ta = document.createElement("textarea"); ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.select();
+      let ok = false; try { ok = document.execCommand("copy"); } catch (e) {}
+      document.body.removeChild(ta);
+      if (ok) done(); else btn.textContent = "Select and copy manually";
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, fallback);
+    else fallback();
+  }
+
+  function render() {
+    entriesEl.textContent = "";
+    if (!results.length) {
+      const e = document.createElement("div"); e.className = "empty";
+      entriesEl.appendChild(e); copyAllBtn.hidden = true; return;
+    }
+    let ok = 0, bad = 0, pending = 0;
+    for (const r of results) {
+      const card = document.createElement("div"); card.className = "entry" + (r.state === "error" ? " error" : r.state === "loading" ? " loading" : "");
+      const bar = document.createElement("div"); bar.className = "entry-bar";
+      const src = document.createElement("span"); src.className = "src"; src.textContent = r.info ? "doi:" + r.info.doi : r.raw; src.title = r.raw;
+      bar.appendChild(src);
+      if (r.state === "ok") {
+        ok++;
+        const b = document.createElement("button"); b.className = "copy"; b.type = "button"; b.textContent = "Copy";
+        b.addEventListener("click", () => copyText(r.bib, b, "Copy"));
+        bar.appendChild(b);
+      }
+      card.appendChild(bar);
+      if (r.state === "ok") { const pre = document.createElement("pre"); pre.textContent = r.bib; card.appendChild(pre); }
+      else { const msg = document.createElement("div"); msg.className = "msg"; msg.textContent = r.state === "loading" ? "Looking up metadata…" : r.error; card.appendChild(msg); if (r.state === "error") bad++; else pending++; }
+      entriesEl.appendChild(card);
+    }
+    copyAllBtn.hidden = ok < 2;
+  }
+
+  function rebuild() {
+    const used = new Set();
+    for (const r of results) if (r.meta) { r.bib = buildEntry(r.meta, r.info, OPTS, used); r.state = "ok"; }
+    render();
+  }
+
+  async function run() {
+    const lines = input.value.split(/\n+/).map(s => s.trim()).filter(Boolean);
+    results = lines.map(raw => {
+      const info = extractDoi(raw);
+      return info ? { raw, info, state: "loading" } : { raw, state: "error", error: "No DOI found in this link. Open the article and copy its DOI (it starts with 10.), or paste a doi.org link." };
+    });
+    render();
+    go.disabled = true;
+    await Promise.all(results.filter(r => r.info).map(async r => {
+      try { r.meta = await fetchMeta(r.info); }
+      catch (e) { r.state = "error"; r.error = e.message; }
+      if (!r.meta) render();
+    }));
+    go.disabled = false;
+    rebuild();
+  }
+
+  go.addEventListener("click", run);
+  input.addEventListener("keydown", e => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) run(); });
+  copyAllBtn.addEventListener("click", () => copyText(results.filter(r => r.state === "ok").map(r => r.bib).join("\n\n"), copyAllBtn, "Copy all"));
+
+  // Exposed for testing
+  window.__doi2bib = { extractDoi, fromCrossref, fromCSL, buildEntry, sentenceCase, texify };
+
+
+})();
+</script>
+</body>
+</html>
