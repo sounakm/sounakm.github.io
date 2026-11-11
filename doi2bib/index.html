@@ -288,7 +288,7 @@ code { font-family: var(--f-mono); font-size: .92em; }
 
     const fa = meta.authors[0];
     const surname = fa ? ascii(plain(fa.family || fa.literal).split(/[\s\-]+/)[0] || "") : "";
-    const word = (title.split(/\s+/).map(w => ascii(w)).find(w => w && !STOP.has(w))) || "";
+    const word = (title.split(/\s+/).map(w => ascii(w.split(/[-‐-―]/)[0])).find(w => w && !STOP.has(w))) || "";
     let key = (surname + meta.year + word) || info.doi.replace(/[^a-z0-9]/gi, "");
     if (usedKeys.has(key)) { let i = 0; while (usedKeys.has(key + "abcdefghijklmnopqrstuvwxyz"[i])) i++; key += "abcdefghijklmnopqrstuvwxyz"[i]; }
     usedKeys.add(key);
